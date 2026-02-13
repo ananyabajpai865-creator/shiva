@@ -526,6 +526,66 @@ h3 {
   justify-content: space-between;
   gap: 12px;
 }
+/* Main wrapper */
+.form-group.dob-field {
+  margin-bottom: 22px;
+  width: 100%;
+}
+
+/* Input wrapper */
+.dob-field .input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Date input styling */
+.dob-field .input-wrapper input[type="date"] {
+  width: 100%;
+  padding: 14px 12px;
+  font-size: 15px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  outline: none;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+/* Focus effect */
+.dob-field .input-wrapper input[type="date"]:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+}
+
+/* Label styling */
+.dob-field .input-wrapper label {
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  background: #fff;
+  padding: 0 6px;
+  font-size: 14px;
+  color: #6b7280;
+  transition: 0.2s ease;
+  pointer-events: none;
+}
+
+/* Floating label when filled or focused */
+.dob-field .input-wrapper input:focus + label,
+.dob-field .input-wrapper input:not(:placeholder-shown) + label {
+  top: -8px;
+  left: 10px;
+  font-size: 12px;
+  color: #4f46e5;
+}
+
+/* Error message */
+.dob-field .error {
+  color: #e11d48;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
 
 .btn {
   border-radius: 14px;

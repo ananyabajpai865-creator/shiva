@@ -1,4 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
+import { User } from "lucide-react";
+
 import { State, City } from "country-state-city";
 import indiaLanguages from "./data/indiaLanguages.json";
 
@@ -6,7 +8,7 @@ import indiaLanguages from "./data/indiaLanguages.json";
 import { PhoneCall, MapPin, Repeat2, Globe, Check } from "lucide-react";
 
 const STEPS = [
-  { key: "basic", label:  "Basic Details" },
+  { key: "basic", label: "Basic Details" },
   { key: "lang", label: "Language" },
   { key: "role", label: " Role Selection" },
   { key: "exp", label: "Experience & Skills" },
@@ -18,11 +20,11 @@ const EDUCATION = ["10th", "12th", "Diploma", "Graduate", "Post Graduate", "Othe
 const YES_NO = ["Yes", "No"];
 const ENGLISH_LEVELS = ["Basic", "Intermediate", "Fluent"];
 const WORK_HOURS = ["1–2 hours", "2–4 hours", "4–6 hours", "6+ hours"];
-const SHIFTS = ["Morning", "Afternoon", "Evening", "Night", "Flexible"];
+const SHIFTS = ["Morning", "Afternoon", "Evening", "Flexible"];
 const EMPLOYMENT = ["Unemployed", "Job", "Business", "Freelancer", "Other"];
 
 const ROLE_OPTIONS = [
-  { key: "tele", Icon: PhoneCall, title: "Tele-calling", sub: "Calling + reporting" },
+  { key: "tele", Icon: PhoneCall, title: "Tele calling", sub: "Calling + reporting" },
   { key: "field", Icon: MapPin, title: "Field visit", sub: "Market visit + reporting" },
   { key: "both", Icon: Repeat2, title: "Both", sub: "Tele + Field" },
 ];
@@ -89,12 +91,16 @@ export default function App() {
     education: "",
     fatherOccupation: "",
     fatherBusinessType: "",
+    fatherOtherOccupation: "",
+
 
     // ✅ College logic
     isCollegeStudent: "",
     collegeName: "",
     passoutYear: "",
     currentEmployment: "",
+    dob: "",
+
 
     canHindi: "",
     englishLevel: "",
@@ -158,6 +164,10 @@ export default function App() {
     const v = form[name];
 
     if (name === "fullName" && v.trim().length < 2) return "Enter full name";
+    if (name === "dob") {
+      if (!v) return "Date of birth is required";
+    }
+
     if (name === "mobile" && !isValidMobile10(v)) return "Enter 10-digit mobile number";
 
     if (name === "whatsapp") {
@@ -182,6 +192,10 @@ export default function App() {
 
     if (name === "fatherBusinessType") {
       if (form.fatherOccupation === "Business" && v.trim().length < 2) return "Specify business type";
+    }
+    if (name === "fatherOtherOccupation") {
+      if (form.fatherOccupation === "Other" && v.trim().length < 2)
+        return "Specify occupation";
     }
 
     // ✅ College validations
@@ -245,11 +259,15 @@ export default function App() {
         "pincode",
         "education",
         "fatherOccupation",
-        "isCollegeStudent"
+        "isCollegeStudent",
+        "dob"
       );
 
       if (form.sameAddress === "No") must.push("currentAddress");
       if (form.fatherOccupation === "Business") must.push("fatherBusinessType");
+      if (form.fatherOccupation === "Other")
+        must.push("fatherOtherOccupation");
+
       if (form.whatsapp.trim().length > 0) must.push("whatsapp");
 
       if (form.isCollegeStudent === "Yes") must.push("collegeName");
@@ -405,7 +423,7 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
           {/* Header */}
           <div className="header">
             <div className="brand">
-             
+
               <div className="titleWrap">
                 <h1>Active cells Freelancer registration</h1>
                 <p>Fill details carefully. </p>
@@ -433,7 +451,7 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     type="button"
                   >
                     <span className="tabText">{s.label}</span>
-                    
+
                   </button>
                 );
               })}
@@ -464,10 +482,31 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       value={form.fullName}
                       onChange={(e) => setField("fullName", e.target.value)}
                       onBlur={() => markTouched("fullName")}
-                      placeholder="e.g. Ananya Bajpai"
+                      placeholder="e.g. Donald sharma"
                     />
                     {fieldError("fullName") ? <div className="error">{fieldError("fullName")}</div> : null}
                   </div>
+                  <div className="form-group">
+                    <label>
+                      Date of Birth <span className="req">*</span>
+                    </label>
+
+                    <input
+                      type="date"
+                      name="dob"
+                      className="dob"
+                      value={form.dob}
+                      max={new Date().toISOString().split("T")[0]}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, dob: e.target.value }))
+                      }
+                    />
+
+                    {fieldError("dob") && (
+                      <p className="error">{fieldError("dob")}</p>
+                    )}
+                  </div>
+
 
                   <div className="field">
                     <label>
@@ -484,7 +523,7 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     {fieldError("mobile") ? <div className="error">{fieldError("mobile")}</div> : null}
                   </div>
 
-                 
+
 
                   <div className="field">
                     <label>
@@ -673,15 +712,26 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                   </div>
 
                   <div className="field">
-                    <label>Your photo (optional)</label>
-                    <input
-                      className="input"
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      onChange={(e) => setField("photo", e.target.files?.[0] || null)}
-                    />
-                    <div className="help">You can upload or capture from camera.</div>
+                    <label>
+                      Your photo <span className="req">*</span>
+                    </label>
+
+                    <div className="file-wrapper">
+                      <label className="upload-box">
+                        <User size={15} className="upload-icon" />
+                      <span className="textual">Click your picture</span> 
+
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          onChange={(e) => setField("photo", e.target.files?.[0] || null)}
+                          className="hidden-file"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="help">You can capture from camera.</div>
                   </div>
 
                   <div className="field">
@@ -745,7 +795,7 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         value={form.collegeName}
                         onChange={(e) => setField("collegeName", e.target.value)}
                         onBlur={() => markTouched("collegeName")}
-                        placeholder="e.g. AMU, Delhi University..."
+                        placeholder="e.g. Galgotias University, Greater Noida"
                       />
                       {fieldError("collegeName") ? <div className="error">{fieldError("collegeName")}</div> : null}
                     </div>
@@ -805,9 +855,10 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           ...p,
                           fatherOccupation: v,
                           fatherBusinessType: v === "Business" ? p.fatherBusinessType : "",
+                          fatherOtherOccupation: v === "Other" ? p.fatherOtherOccupation : "",
                         }));
                       }}
-                      onBlur={() => markTouched("fatherOccupation")}
+
                     >
                       <option value="">Select</option>
                       <option value="Business">Business</option>
@@ -821,10 +872,14 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     ) : null}
                   </div>
 
-                  {form.fatherOccupation === "Business" && (
+                  {(form.fatherOccupation === "Business" || form.fatherOccupation === "Other") && (
+
                     <div className="field">
                       <label>
-                        Specify business type <span className="req">*</span>
+                        {form.fatherOccupation === "Business"
+                          ? "Specify business type"
+                          : "Specify occupation"}
+                        <span className="req">*</span>
                       </label>
                       <input
                         className="input"
