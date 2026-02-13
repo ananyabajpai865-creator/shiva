@@ -163,6 +163,7 @@ export default function App() {
     confirmCorrect: false,
     agreeTc: false,
   });
+  
 
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(null);
