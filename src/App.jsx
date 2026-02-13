@@ -170,13 +170,12 @@ export default function App() {
   useEffect(() => {
     if (form?.photo) {
       const objectUrl = URL.createObjectURL(form.photo);
-      setPreview(objectUrl);
-
+      queueMicrotask(() => setPreview(objectUrl));
       return () => URL.revokeObjectURL(objectUrl);
     } else {
-      setPreview(null);
+      queueMicrotask(() => setPreview(null));
     }
-  }, [form?.photo]);
+  }, [form.photo]);
 
   const roleHasTele = form.role === "tele" || form.role === "both";
   const roleHasField = form.role === "field" || form.role === "both";
@@ -516,10 +515,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
           <div className="tabsWrap">
             <div className="tabsBar">
               {STEPS.map((s) => {
-                const active = step === s.key;
-                const done = isDone(s.key);
-
-                return (
+                  const active = step === s.key;
+  
+                  return (
                   <button
                     key={s.key}
                     className={`tab ${active ? "tabActive" : ""}`}
