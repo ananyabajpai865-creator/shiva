@@ -1,0 +1,1 @@
+export const RainbowIndicator = () => <div className="rainbow-strip" />;
