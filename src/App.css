@@ -455,11 +455,7 @@ h3 {
   object-fit: contain;
 }
 
-.roleText {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
+
 
 .roleName {
   font-weight: 800;

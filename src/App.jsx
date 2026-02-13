@@ -710,7 +710,6 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     />
                     {fieldError("pincode") ? <div className="error">{fieldError("pincode")}</div> : null}
                   </div>
-
                   <div className="field">
                     <label>
                       Your photo <span className="req">*</span>
@@ -718,20 +717,28 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
 
                     <div className="file-wrapper">
                       <label className="upload-box">
-                        <User size={15} className="upload-icon" />
-                      <span className="textual">Click your picture</span> 
+                        {/* Show icon only if no photo is selected */}
+                        {!form?.photo && <User size={15} className="upload-icon" />}
+
+                        <span className="textual">
+                          {/* If photo exists, show its name. Otherwise, show the prompt. */}
+                          {form?.photo ? form.photo.name : "Click your picture"}
+                        </span>
 
                         <input
                           type="file"
                           accept="image/*"
                           capture="environment"
+                          // This updates your form object
                           onChange={(e) => setField("photo", e.target.files?.[0] || null)}
                           className="hidden-file"
                         />
                       </label>
                     </div>
 
-                    <div className="help">You can capture from camera.</div>
+                    <div className="help">
+                      {form?.photo ? "Image ready for upload!" : "You can capture from camera."}
+                    </div>
                   </div>
 
                   <div className="field">
