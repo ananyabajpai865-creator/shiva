@@ -592,8 +592,10 @@ body {
 .roleCardLeft {
   display: flex;
   align-items: center;
+  /* justify-content: center; */
   gap: 12px;
   min-width: 0;
+  /* border: 1px solid yellow; */
 }
 
 .roleCardIcon {
@@ -606,14 +608,19 @@ body {
   justify-content: center;
   color: var(--brand);
   flex: 0 0 auto;
+  
 }
 
 .roleCardTitle {
+  display: flex;
+  justify-content: flex-start;
   font-weight: 900;
   color: #111827;
 }
 
-
+.roleCardText{
+  align-items: flex-start;
+}
 
 .roleCardRight {
   font-weight: 900;
@@ -927,6 +934,7 @@ body {
 
 .photo-upload-box {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -957,6 +965,45 @@ body {
 .photo-hidden-input {
   display: none;
 }
+
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%; /* make the section full-width */
+}
+
+.preview-image {
+  width: 100%;           /* image takes full width of container */
+  max-width: 200px;      /* optional: prevent it from getting too large */
+  height: auto;          /* height scales to maintain aspect ratio */
+  object-fit: cover;     /* crop if necessary */
+  border-radius: 8px;
+  border: 1px solid #cccccc;
+}
+
+
+.photo-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  border: 1px solid yellow;
+}
+
+.icon-btn {
+  border: none;
+  background: #f1f1f1;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: #e4e4e4;
+}
+
+
 
 .field-help {
   font-size: 11.5px;

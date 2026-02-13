@@ -1,5 +1,24 @@
-import React, { useMemo, useRef, useState } from "react";
-import { User } from "lucide-react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
+import { User, Pencil, Trash2 } from "lucide-react";
+
+//////////////////////////////////////////////////////////////////////////////
+// import { useEffect } from "react";
+// import { Pencil, Trash2 } from "lucide-react";
+
+// const fileInputRef = useRef(null);
+// const [preview, setPreview] = useState(null);
+
+// useEffect(() => {
+//   if (form?.photo) {
+//     const objectUrl = URL.createObjectURL(form.photo);
+//     setPreview(objectUrl);
+
+//     return () => URL.revokeObjectURL(objectUrl);
+//   } else {
+//     setPreview(null);
+//   }
+// }, [form?.photo]);
+///////////////////////////////////////////////////////////////////////////////
 
 import { State, City } from "country-state-city";
 import indiaLanguages from "./data/indiaLanguages.json";
@@ -16,7 +35,14 @@ const STEPS = [
 ];
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const EDUCATION = ["10th", "12th", "Diploma", "Graduate", "Post Graduate", "Other"];
+const EDUCATION = [
+  "10th",
+  "12th",
+  "Diploma",
+  "Graduate",
+  "Post Graduate",
+  "Other",
+];
 const YES_NO = ["Yes", "No"];
 const ENGLISH_LEVELS = ["Basic", "Intermediate", "Fluent"];
 const WORK_HOURS = ["1–2 hours", "2–4 hours", "4–6 hours", "6+ hours"];
@@ -24,8 +50,18 @@ const SHIFTS = ["Morning", "Afternoon", "Evening", "Flexible"];
 const EMPLOYMENT = ["Unemployed", "Job", "Business", "Freelancer", "Other"];
 
 const ROLE_OPTIONS = [
-  { key: "tele", Icon: PhoneCall, title: "Tele calling", sub: "Calling + reporting" },
-  { key: "field", Icon: MapPin, title: "Field visit", sub: "Market visit + reporting" },
+  {
+    key: "tele",
+    Icon: PhoneCall,
+    title: "Tele calling",
+    sub: "Calling + reporting",
+  },
+  {
+    key: "field",
+    Icon: MapPin,
+    title: "Field visit",
+    sub: "Market visit + reporting",
+  },
   { key: "both", Icon: Repeat2, title: "Both", sub: "Tele + Field" },
 ];
 
@@ -93,14 +129,12 @@ export default function App() {
     fatherBusinessType: "",
     fatherOtherOccupation: "",
 
-
     // ✅ College logic
     isCollegeStudent: "",
     collegeName: "",
     passoutYear: "",
     currentEmployment: "",
     dob: "",
-
 
     canHindi: "",
     englishLevel: "",
@@ -129,6 +163,20 @@ export default function App() {
     confirmCorrect: false,
     agreeTc: false,
   });
+
+  const fileInputRef = useRef(null);
+  const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    if (form?.photo) {
+      const objectUrl = URL.createObjectURL(form.photo);
+      setPreview(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setPreview(null);
+    }
+  }, [form?.photo]);
 
   const roleHasTele = form.role === "tele" || form.role === "both";
   const roleHasField = form.role === "field" || form.role === "both";
@@ -168,30 +216,36 @@ export default function App() {
       if (!v) return "Date of birth is required";
     }
 
-    if (name === "mobile" && !isValidMobile10(v)) return "Enter 10-digit mobile number";
+    if (name === "mobile" && !isValidMobile10(v))
+      return "Enter 10-digit mobile number";
 
     if (name === "whatsapp") {
-      if (v.trim().length > 0 && !isValidMobile10(v)) return "Enter 10-digit WhatsApp number";
+      if (v.trim().length > 0 && !isValidMobile10(v))
+        return "Enter 10-digit WhatsApp number";
     }
 
     if (name === "doYouHaveTelegram" && !v) return "Select Yes/No";
-    if (name === "email" && !isValidGmail(v)) return "Only Gmail is allowed (example@gmail.com)";
+    if (name === "email" && !isValidGmail(v))
+      return "Only Gmail is allowed (example@gmail.com)";
     if (name === "gender" && !v) return "Select gender";
     if (name === "address" && v.trim().length < 8) return "Enter full address";
     if (name === "sameAddress" && !v) return "Select Yes/No";
 
     if (name === "currentAddress") {
-      if (form.sameAddress === "No" && v.trim().length < 8) return "Enter current address";
+      if (form.sameAddress === "No" && v.trim().length < 8)
+        return "Enter current address";
     }
 
     if (name === "stateIso" && !v) return "Select state";
     if (name === "city" && !v) return "Select city";
-    if (name === "pincode" && !isValidPincode6(v)) return "Enter 6-digit pincode";
+    if (name === "pincode" && !isValidPincode6(v))
+      return "Enter 6-digit pincode";
     if (name === "education" && !v) return "Select education";
     if (name === "fatherOccupation" && !v) return "Select occupation";
 
     if (name === "fatherBusinessType") {
-      if (form.fatherOccupation === "Business" && v.trim().length < 2) return "Specify business type";
+      if (form.fatherOccupation === "Business" && v.trim().length < 2)
+        return "Specify business type";
     }
     if (name === "fatherOtherOccupation") {
       if (form.fatherOccupation === "Other" && v.trim().length < 2)
@@ -202,15 +256,18 @@ export default function App() {
     if (name === "isCollegeStudent" && !v) return "Select Yes/No";
 
     if (name === "collegeName") {
-      if (form.isCollegeStudent === "Yes" && v.trim().length < 2) return "Enter college name";
+      if (form.isCollegeStudent === "Yes" && v.trim().length < 2)
+        return "Enter college name";
     }
 
     if (name === "passoutYear") {
-      if (form.isCollegeStudent === "No" && !isValidYear4(v)) return "Enter valid passout year (YYYY)";
+      if (form.isCollegeStudent === "No" && !isValidYear4(v))
+        return "Enter valid passout year (YYYY)";
     }
 
     if (name === "currentEmployment") {
-      if (form.isCollegeStudent === "No" && !v) return "Select current employment";
+      if (form.isCollegeStudent === "No" && !v)
+        return "Select current employment";
     }
 
     if (name === "canHindi" && !v) return "Select Yes/No";
@@ -220,12 +277,14 @@ export default function App() {
     if (name === "role" && !v) return "Choose one role";
     if (name === "workHours" && !v) return "Select hours";
     if (name === "shift" && !v) return "Select shift";
-    if (name === "days" && form.days.length === 0) return "Select at least one day";
+    if (name === "days" && form.days.length === 0)
+      return "Select at least one day";
     if (name === "laptop" && !v) return "Select Yes/No";
 
     if (roleHasTele) {
       if (name === "teleExp" && !v) return "Select Yes/No";
-      if (name === "teleTotalExp" && form.teleExp === "Yes" && !v) return "Select experience";
+      if (name === "teleTotalExp" && form.teleExp === "Yes" && !v)
+        return "Select experience";
       if (name === "mysteryCalling" && !v) return "Select Yes/No";
     }
 
@@ -235,7 +294,8 @@ export default function App() {
       if (name === "drivingLicense" && !v) return "Select Yes/No";
       if (name === "travelCityDaily" && !v) return "Select Yes/No";
       if (name === "travelOutsideSometimes" && !v) return "Select Yes/No";
-      if (name === "preferredArea" && v.trim().length < 2) return "Enter preferred area";
+      if (name === "preferredArea" && v.trim().length < 2)
+        return "Enter preferred area";
       if (name === "coverageRange" && !v) return "Select range";
     }
 
@@ -260,22 +320,24 @@ export default function App() {
         "education",
         "fatherOccupation",
         "isCollegeStudent",
-        "dob"
+        "dob",
       );
 
       if (form.sameAddress === "No") must.push("currentAddress");
       if (form.fatherOccupation === "Business") must.push("fatherBusinessType");
-      if (form.fatherOccupation === "Other")
-        must.push("fatherOtherOccupation");
+      if (form.fatherOccupation === "Other") must.push("fatherOtherOccupation");
 
       if (form.whatsapp.trim().length > 0) must.push("whatsapp");
 
       if (form.isCollegeStudent === "Yes") must.push("collegeName");
-      if (form.isCollegeStudent === "No") must.push("passoutYear", "currentEmployment");
+      if (form.isCollegeStudent === "No")
+        must.push("passoutYear", "currentEmployment");
     }
 
-    if (stepKey === "lang") must.push("canHindi", "englishLevel", "nativeLanguage");
-    if (stepKey === "role") must.push("role", "workHours", "shift", "days", "laptop");
+    if (stepKey === "lang")
+      must.push("canHindi", "englishLevel", "nativeLanguage");
+    if (stepKey === "role")
+      must.push("role", "workHours", "shift", "days", "laptop");
 
     if (stepKey === "exp") {
       if (roleHasTele) {
@@ -290,7 +352,7 @@ export default function App() {
           "travelCityDaily",
           "travelOutsideSometimes",
           "preferredArea",
-          "coverageRange"
+          "coverageRange",
         );
       }
     }
@@ -360,9 +422,19 @@ export default function App() {
   const isDone = (k) => {
     if (k === "basic") return !stepHasErrors("basic");
     if (k === "lang") return !stepHasErrors("basic") && !stepHasErrors("lang");
-    if (k === "role") return !stepHasErrors("basic") && !stepHasErrors("lang") && !stepHasErrors("role");
+    if (k === "role")
+      return (
+        !stepHasErrors("basic") &&
+        !stepHasErrors("lang") &&
+        !stepHasErrors("role")
+      );
     if (k === "exp")
-      return !stepHasErrors("basic") && !stepHasErrors("lang") && !stepHasErrors("role") && !stepHasErrors("exp");
+      return (
+        !stepHasErrors("basic") &&
+        !stepHasErrors("lang") &&
+        !stepHasErrors("role") &&
+        !stepHasErrors("exp")
+      );
     return false;
   };
 
@@ -423,14 +495,18 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
           {/* Header */}
           <div className="header">
             <div className="brand">
-
               <div className="titleWrap">
                 <h1>Active cells Freelancer registration</h1>
                 <p>Fill details carefully. </p>
               </div>
             </div>
 
-            <a className="badge" href="https://subtech.in" target="_blank" rel="noreferrer">
+            <a
+              className="badge"
+              href="https://subtech.in"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Globe size={16} />
               subtech.in
             </a>
@@ -451,14 +527,16 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     type="button"
                   >
                     <span className="tabText">{s.label}</span>
-
                   </button>
                 );
               })}
             </div>
 
             <div className="tabsLine">
-              <div className="tabsLineFill" style={{ width: `${((stepIndex + 1) / STEPS.length) * 100}%` }} />
+              <div
+                className="tabsLineFill"
+                style={{ width: `${((stepIndex + 1) / STEPS.length) * 100}%` }}
+              />
             </div>
           </div>
 
@@ -484,7 +562,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       onBlur={() => markTouched("fullName")}
                       placeholder="e.g. Donald sharma"
                     />
-                    {fieldError("fullName") ? <div className="error">{fieldError("fullName")}</div> : null}
+                    {fieldError("fullName") ? (
+                      <div className="error">{fieldError("fullName")}</div>
+                    ) : null}
                   </div>
                   <div className="form-group">
                     <label>
@@ -507,7 +587,6 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     )}
                   </div>
 
-
                   <div className="field">
                     <label>
                       Mobile Number <span className="req">*</span>
@@ -516,14 +595,19 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       className="input"
                       inputMode="numeric"
                       value={form.mobile}
-                      onChange={(e) => setField("mobile", onlyDigits(e.target.value).slice(0, 10))}
+                      onChange={(e) =>
+                        setField(
+                          "mobile",
+                          onlyDigits(e.target.value).slice(0, 10),
+                        )
+                      }
                       onBlur={() => markTouched("mobile")}
                       placeholder="10-digit mobile"
                     />
-                    {fieldError("mobile") ? <div className="error">{fieldError("mobile")}</div> : null}
+                    {fieldError("mobile") ? (
+                      <div className="error">{fieldError("mobile")}</div>
+                    ) : null}
                   </div>
-
-
 
                   <div className="field">
                     <label>
@@ -542,7 +626,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("telegram") ? <div className="error">{fieldError("telegram")}</div> : null}
+                    {fieldError("telegram") ? (
+                      <div className="error">{fieldError("telegram")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -573,7 +659,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </span>
                       </div>
                     ) : null}
-                    {fieldError("email") ? <div className="error">{fieldError("email")}</div> : null}
+                    {fieldError("email") ? (
+                      <div className="error">{fieldError("email")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -591,7 +679,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       <option value="Female">Female</option>
                       <option value="Other">Other</option>
                     </select>
-                    {fieldError("gender") ? <div className="error">{fieldError("gender")}</div> : null}
+                    {fieldError("gender") ? (
+                      <div className="error">{fieldError("gender")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field" style={{ gridColumn: "1 / -1" }}>
@@ -605,12 +695,15 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       onBlur={() => markTouched("address")}
                       placeholder="House/Street/Area..."
                     />
-                    {fieldError("address") ? <div className="error">{fieldError("address")}</div> : null}
+                    {fieldError("address") ? (
+                      <div className="error">{fieldError("address")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
                     <label>
-                      Are you currently living on the same address? <span className="req">*</span>
+                      Are you currently living on the same address?{" "}
+                      <span className="req">*</span>
                     </label>
                     <select
                       className="select"
@@ -625,7 +718,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("sameAddress") ? <div className="error">{fieldError("sameAddress")}</div> : null}
+                    {fieldError("sameAddress") ? (
+                      <div className="error">{fieldError("sameAddress")}</div>
+                    ) : null}
                   </div>
 
                   {form.sameAddress === "No" && (
@@ -636,12 +731,16 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       <input
                         className="input"
                         value={form.currentAddress}
-                        onChange={(e) => setField("currentAddress", e.target.value)}
+                        onChange={(e) =>
+                          setField("currentAddress", e.target.value)
+                        }
                         onBlur={() => markTouched("currentAddress")}
                         placeholder="Current address"
                       />
                       {fieldError("currentAddress") ? (
-                        <div className="error">{fieldError("currentAddress")}</div>
+                        <div className="error">
+                          {fieldError("currentAddress")}
+                        </div>
                       ) : null}
                     </div>
                   )}
@@ -672,7 +771,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("stateIso") ? <div className="error">{fieldError("stateIso")}</div> : null}
+                    {fieldError("stateIso") ? (
+                      <div className="error">{fieldError("stateIso")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -686,14 +787,21 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       onBlur={() => markTouched("city")}
                       disabled={!form.stateIso}
                     >
-                      <option value="">{form.stateIso ? "Select city" : "Select state first"}</option>
+                      <option value="">
+                        {form.stateIso ? "Select city" : "Select state first"}
+                      </option>
                       {cities.map((c) => (
-                        <option key={`${c.name}-${c.latitude}-${c.longitude}`} value={c.name}>
+                        <option
+                          key={`${c.name}-${c.latitude}-${c.longitude}`}
+                          value={c.name}
+                        >
                           {c.name}
                         </option>
                       ))}
                     </select>
-                    {fieldError("city") ? <div className="error">{fieldError("city")}</div> : null}
+                    {fieldError("city") ? (
+                      <div className="error">{fieldError("city")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -704,11 +812,18 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       className="input"
                       inputMode="numeric"
                       value={form.pincode}
-                      onChange={(e) => setField("pincode", onlyDigits(e.target.value).slice(0, 6))}
+                      onChange={(e) =>
+                        setField(
+                          "pincode",
+                          onlyDigits(e.target.value).slice(0, 6),
+                        )
+                      }
                       onBlur={() => markTouched("pincode")}
                       placeholder="6-digit pincode"
                     />
-                    {fieldError("pincode") ? <div className="error">{fieldError("pincode")}</div> : null}
+                    {fieldError("pincode") ? (
+                      <div className="error">{fieldError("pincode")}</div>
+                    ) : null}
                   </div>
                   <div className="field">
                     <label>
@@ -716,28 +831,81 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     </label>
 
                     <div className="file-wrapper">
-                      <label className="upload-box">
-                        {/* Show icon only if no photo is selected */}
-                        {!form?.photo && <User size={15} className="upload-icon" />}
+                      <div className="upload-box">
+                        {/* If no photo */}
+                        {!form?.photo && (
+                          <>
+                            <User size={40} className="upload-icon" />
+                            <span className="textual">
+                              Click to upload your picture
+                            </span>
 
-                        <span className="textual">
-                          {/* If photo exists, show its name. Otherwise, show the prompt. */}
-                          {form?.photo ? form.photo.name : "Click your picture"}
-                        </span>
+                            <button
+                              type="button"
+                              onClick={() => fileInputRef.current?.click()}
+                              className="upload-btn"
+                            >
+                              Upload Photo
+                            </button>
+                          </>
+                        )}
 
+                        {/* If photo exists */}
+                        {form?.photo && (
+                          <div className="preview-section">
+                            {/* Image Preview */}
+                            {preview && (
+                              <img
+                                src={preview}
+                                alt="Preview"
+                                className="preview-image"
+                              />
+                            )}
+
+                            {/* File Name */}
+                            <span className="file-name">{form.photo.name}</span>
+
+                            {/* Action Buttons */}
+                            <div className="action-buttons">
+                              {/* Edit Button */}
+                              <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                className="icon-btn edit-btn"
+                              >
+                                <Pencil size={16} />
+                              </button>
+
+                              {/* Remove Button */}
+                              <button
+                                type="button"
+                                onClick={() => setField("photo", null)}
+                                className="icon-btn remove-btn"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Hidden File Input (UNCHANGED functionality) */}
                         <input
+                          ref={fileInputRef}
                           type="file"
                           accept="image/*"
                           capture="environment"
-                          // This updates your form object
-                          onChange={(e) => setField("photo", e.target.files?.[0] || null)}
+                          onChange={(e) =>
+                            setField("photo", e.target.files?.[0] || null)
+                          }
                           className="hidden-file"
                         />
-                      </label>
+                      </div>
                     </div>
 
                     <div className="help">
-                      {form?.photo ? "Image ready for upload!" : "You can capture from camera."}
+                      {form?.photo
+                        ? "Image ready for upload!"
+                        : "You can capture from camera."}
                     </div>
                   </div>
 
@@ -758,7 +926,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("education") ? <div className="error">{fieldError("education")}</div> : null}
+                    {fieldError("education") ? (
+                      <div className="error">{fieldError("education")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -775,7 +945,8 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           isCollegeStudent: v,
                           collegeName: v === "Yes" ? p.collegeName : "",
                           passoutYear: v === "No" ? p.passoutYear : "",
-                          currentEmployment: v === "No" ? p.currentEmployment : "",
+                          currentEmployment:
+                            v === "No" ? p.currentEmployment : "",
                         }));
                       }}
                       onBlur={() => markTouched("isCollegeStudent")}
@@ -788,7 +959,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       ))}
                     </select>
                     {fieldError("isCollegeStudent") ? (
-                      <div className="error">{fieldError("isCollegeStudent")}</div>
+                      <div className="error">
+                        {fieldError("isCollegeStudent")}
+                      </div>
                     ) : null}
                   </div>
 
@@ -800,11 +973,15 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       <input
                         className="input"
                         value={form.collegeName}
-                        onChange={(e) => setField("collegeName", e.target.value)}
+                        onChange={(e) =>
+                          setField("collegeName", e.target.value)
+                        }
                         onBlur={() => markTouched("collegeName")}
                         placeholder="e.g. Galgotias University, Greater Noida"
                       />
-                      {fieldError("collegeName") ? <div className="error">{fieldError("collegeName")}</div> : null}
+                      {fieldError("collegeName") ? (
+                        <div className="error">{fieldError("collegeName")}</div>
+                      ) : null}
                     </div>
                   )}
 
@@ -818,11 +995,20 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           className="input"
                           inputMode="numeric"
                           value={form.passoutYear}
-                          onChange={(e) => setField("passoutYear", onlyDigits(e.target.value).slice(0, 4))}
+                          onChange={(e) =>
+                            setField(
+                              "passoutYear",
+                              onlyDigits(e.target.value).slice(0, 4),
+                            )
+                          }
                           onBlur={() => markTouched("passoutYear")}
                           placeholder="YYYY"
                         />
-                        {fieldError("passoutYear") ? <div className="error">{fieldError("passoutYear")}</div> : null}
+                        {fieldError("passoutYear") ? (
+                          <div className="error">
+                            {fieldError("passoutYear")}
+                          </div>
+                        ) : null}
                       </div>
 
                       <div className="field">
@@ -832,7 +1018,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         <select
                           className="select"
                           value={form.currentEmployment}
-                          onChange={(e) => setField("currentEmployment", e.target.value)}
+                          onChange={(e) =>
+                            setField("currentEmployment", e.target.value)
+                          }
                           onBlur={() => markTouched("currentEmployment")}
                         >
                           <option value="">Select</option>
@@ -843,7 +1031,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           ))}
                         </select>
                         {fieldError("currentEmployment") ? (
-                          <div className="error">{fieldError("currentEmployment")}</div>
+                          <div className="error">
+                            {fieldError("currentEmployment")}
+                          </div>
                         ) : null}
                       </div>
                     </>
@@ -861,11 +1051,12 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         setForm((p) => ({
                           ...p,
                           fatherOccupation: v,
-                          fatherBusinessType: v === "Business" ? p.fatherBusinessType : "",
-                          fatherOtherOccupation: v === "Other" ? p.fatherOtherOccupation : "",
+                          fatherBusinessType:
+                            v === "Business" ? p.fatherBusinessType : "",
+                          fatherOtherOccupation:
+                            v === "Other" ? p.fatherOtherOccupation : "",
                         }));
                       }}
-
                     >
                       <option value="">Select</option>
                       <option value="Business">Business</option>
@@ -875,12 +1066,14 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       <option value="Other">Other</option>
                     </select>
                     {fieldError("fatherOccupation") ? (
-                      <div className="error">{fieldError("fatherOccupation")}</div>
+                      <div className="error">
+                        {fieldError("fatherOccupation")}
+                      </div>
                     ) : null}
                   </div>
 
-                  {(form.fatherOccupation === "Business" || form.fatherOccupation === "Other") && (
-
+                  {(form.fatherOccupation === "Business" ||
+                    form.fatherOccupation === "Other") && (
                     <div className="field">
                       <label>
                         {form.fatherOccupation === "Business"
@@ -891,12 +1084,16 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                       <input
                         className="input"
                         value={form.fatherBusinessType}
-                        onChange={(e) => setField("fatherBusinessType", e.target.value)}
+                        onChange={(e) =>
+                          setField("fatherBusinessType", e.target.value)
+                        }
                         onBlur={() => markTouched("fatherBusinessType")}
                         placeholder="e.g. Retail, Shop, Trading..."
                       />
                       {fieldError("fatherBusinessType") ? (
-                        <div className="error">{fieldError("fatherBusinessType")}</div>
+                        <div className="error">
+                          {fieldError("fatherBusinessType")}
+                        </div>
                       ) : null}
                     </div>
                   )}
@@ -929,7 +1126,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("canHindi") ? <div className="error">{fieldError("canHindi")}</div> : null}
+                    {fieldError("canHindi") ? (
+                      <div className="error">{fieldError("canHindi")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -949,7 +1148,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("englishLevel") ? <div className="error">{fieldError("englishLevel")}</div> : null}
+                    {fieldError("englishLevel") ? (
+                      <div className="error">{fieldError("englishLevel")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field" style={{ gridColumn: "1 / -1" }}>
@@ -959,7 +1160,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     <select
                       className="select"
                       value={form.nativeLanguage}
-                      onChange={(e) => setField("nativeLanguage", e.target.value)}
+                      onChange={(e) =>
+                        setField("nativeLanguage", e.target.value)
+                      }
                       onBlur={() => markTouched("nativeLanguage")}
                     >
                       <option value="">Select</option>
@@ -969,7 +1172,11 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("nativeLanguage") ? <div className="error">{fieldError("nativeLanguage")}</div> : null}
+                    {fieldError("nativeLanguage") ? (
+                      <div className="error">
+                        {fieldError("nativeLanguage")}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -984,7 +1191,8 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
 
                 <div className="field" style={{ marginBottom: 12 }}>
                   <label>
-                    Which work are you applying for? <span className="req">*</span>
+                    Which work are you applying for?{" "}
+                    <span className="req">*</span>
                   </label>
 
                   <div className="roleRowGrid">
@@ -1007,7 +1215,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                             </div>
                           </div>
 
-                          <div className={`roleCardRight ${active ? "isActive" : ""}`}>
+                          <div
+                            className={`roleCardRight ${active ? "isActive" : ""}`}
+                          >
                             {active ? "Selected" : "Select"}
                           </div>
                         </button>
@@ -1015,13 +1225,16 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     })}
                   </div>
 
-                  {fieldError("role") ? <div className="error">{fieldError("role")}</div> : null}
+                  {fieldError("role") ? (
+                    <div className="error">{fieldError("role")}</div>
+                  ) : null}
                 </div>
 
                 <div className="grid2">
                   <div className="field">
                     <label>
-                      Available working hours per day <span className="req">*</span>
+                      Available working hours per day{" "}
+                      <span className="req">*</span>
                     </label>
                     <select
                       className="select"
@@ -1036,7 +1249,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("workHours") ? <div className="error">{fieldError("workHours")}</div> : null}
+                    {fieldError("workHours") ? (
+                      <div className="error">{fieldError("workHours")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -1056,7 +1271,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("shift") ? <div className="error">{fieldError("shift")}</div> : null}
+                    {fieldError("shift") ? (
+                      <div className="error">{fieldError("shift")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field" style={{ gridColumn: "1 / -1" }}>
@@ -1075,7 +1292,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </button>
                       ))}
                     </div>
-                    {fieldError("days") ? <div className="error">{fieldError("days")}</div> : null}
+                    {fieldError("days") ? (
+                      <div className="error">{fieldError("days")}</div>
+                    ) : null}
                   </div>
 
                   <div className="field">
@@ -1095,7 +1314,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         </option>
                       ))}
                     </select>
-                    {fieldError("laptop") ? <div className="error">{fieldError("laptop")}</div> : null}
+                    {fieldError("laptop") ? (
+                      <div className="error">{fieldError("laptop")}</div>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -1108,7 +1329,11 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                   <span className="pill" /> C) Experience & Skills
                 </h2>
 
-                {!form.role ? <div className="help">Please select a role in “Role Selection” step first.</div> : null}
+                {!form.role ? (
+                  <div className="help">
+                    Please select a role in “Role Selection” step first.
+                  </div>
+                ) : null}
 
                 {roleHasTele && (
                   <div style={{ marginBottom: 14 }}>
@@ -1119,7 +1344,8 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     <div className="grid2">
                       <div className="field">
                         <label>
-                          Do you have prior telecalling experience? <span className="req">*</span>
+                          Do you have prior telecalling experience?{" "}
+                          <span className="req">*</span>
                         </label>
                         <select
                           className="select"
@@ -1141,7 +1367,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                             </option>
                           ))}
                         </select>
-                        {fieldError("teleExp") ? <div className="error">{fieldError("teleExp")}</div> : null}
+                        {fieldError("teleExp") ? (
+                          <div className="error">{fieldError("teleExp")}</div>
+                        ) : null}
                       </div>
 
                       {form.teleExp === "Yes" && (
@@ -1152,30 +1380,43 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           <select
                             className="select"
                             value={form.teleTotalExp}
-                            onChange={(e) => setField("teleTotalExp", e.target.value)}
+                            onChange={(e) =>
+                              setField("teleTotalExp", e.target.value)
+                            }
                             onBlur={() => markTouched("teleTotalExp")}
                           >
                             <option value="">Select</option>
-                            {["<3 months", "3–6 months", "6–12 months", "1–3 years", "3+ years"].map((x) => (
+                            {[
+                              "<3 months",
+                              "3–6 months",
+                              "6–12 months",
+                              "1–3 years",
+                              "3+ years",
+                            ].map((x) => (
                               <option key={x} value={x}>
                                 {x}
                               </option>
                             ))}
                           </select>
                           {fieldError("teleTotalExp") ? (
-                            <div className="error">{fieldError("teleTotalExp")}</div>
+                            <div className="error">
+                              {fieldError("teleTotalExp")}
+                            </div>
                           ) : null}
                         </div>
                       )}
 
                       <div className="field">
                         <label>
-                          Mystery calling / customer-style calling before? <span className="req">*</span>
+                          Mystery calling / customer-style calling before?{" "}
+                          <span className="req">*</span>
                         </label>
                         <select
                           className="select"
                           value={form.mysteryCalling}
-                          onChange={(e) => setField("mysteryCalling", e.target.value)}
+                          onChange={(e) =>
+                            setField("mysteryCalling", e.target.value)
+                          }
                           onBlur={() => markTouched("mysteryCalling")}
                         >
                           <option value="">Select</option>
@@ -1186,13 +1427,16 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           ))}
                         </select>
                         {fieldError("mysteryCalling") ? (
-                          <div className="error">{fieldError("mysteryCalling")}</div>
+                          <div className="error">
+                            {fieldError("mysteryCalling")}
+                          </div>
                         ) : null}
                       </div>
 
                       <div className="field">
                         <label>
-                          Comfort level to speak confidently (1–5) <span className="req">*</span>
+                          Comfort level to speak confidently (1–5){" "}
+                          <span className="req">*</span>
                         </label>
                         <input
                           className="input"
@@ -1200,9 +1444,13 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           min="1"
                           max="5"
                           value={form.teleConfidence}
-                          onChange={(e) => setField("teleConfidence", Number(e.target.value))}
+                          onChange={(e) =>
+                            setField("teleConfidence", Number(e.target.value))
+                          }
                         />
-                        <div className="help">Selected: {form.teleConfidence}</div>
+                        <div className="help">
+                          Selected: {form.teleConfidence}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1217,7 +1465,8 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                     <div className="grid2">
                       <div className="field">
                         <label>
-                          Do you have field sales/market visit experience? <span className="req">*</span>
+                          Do you have field sales/market visit experience?{" "}
+                          <span className="req">*</span>
                         </label>
                         <select
                           className="select"
@@ -1232,17 +1481,22 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                             </option>
                           ))}
                         </select>
-                        {fieldError("fieldExp") ? <div className="error">{fieldError("fieldExp")}</div> : null}
+                        {fieldError("fieldExp") ? (
+                          <div className="error">{fieldError("fieldExp")}</div>
+                        ) : null}
                       </div>
 
                       <div className="field">
                         <label>
-                          Do you have a two-wheeler? <span className="req">*</span>
+                          Do you have a two-wheeler?{" "}
+                          <span className="req">*</span>
                         </label>
                         <select
                           className="select"
                           value={form.twoWheeler}
-                          onChange={(e) => setField("twoWheeler", e.target.value)}
+                          onChange={(e) =>
+                            setField("twoWheeler", e.target.value)
+                          }
                           onBlur={() => markTouched("twoWheeler")}
                         >
                           <option value="">Select</option>
@@ -1252,17 +1506,24 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                             </option>
                           ))}
                         </select>
-                        {fieldError("twoWheeler") ? <div className="error">{fieldError("twoWheeler")}</div> : null}
+                        {fieldError("twoWheeler") ? (
+                          <div className="error">
+                            {fieldError("twoWheeler")}
+                          </div>
+                        ) : null}
                       </div>
 
                       <div className="field">
                         <label>
-                          Driving license available? <span className="req">*</span>
+                          Driving license available?{" "}
+                          <span className="req">*</span>
                         </label>
                         <select
                           className="select"
                           value={form.drivingLicense}
-                          onChange={(e) => setField("drivingLicense", e.target.value)}
+                          onChange={(e) =>
+                            setField("drivingLicense", e.target.value)
+                          }
                           onBlur={() => markTouched("drivingLicense")}
                         >
                           <option value="">Select</option>
@@ -1273,18 +1534,23 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           ))}
                         </select>
                         {fieldError("drivingLicense") ? (
-                          <div className="error">{fieldError("drivingLicense")}</div>
+                          <div className="error">
+                            {fieldError("drivingLicense")}
+                          </div>
                         ) : null}
                       </div>
 
                       <div className="field">
                         <label>
-                          Can you travel within city daily? <span className="req">*</span>
+                          Can you travel within city daily?{" "}
+                          <span className="req">*</span>
                         </label>
                         <select
                           className="select"
                           value={form.travelCityDaily}
-                          onChange={(e) => setField("travelCityDaily", e.target.value)}
+                          onChange={(e) =>
+                            setField("travelCityDaily", e.target.value)
+                          }
                           onBlur={() => markTouched("travelCityDaily")}
                         >
                           <option value="">Select</option>
@@ -1295,18 +1561,23 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           ))}
                         </select>
                         {fieldError("travelCityDaily") ? (
-                          <div className="error">{fieldError("travelCityDaily")}</div>
+                          <div className="error">
+                            {fieldError("travelCityDaily")}
+                          </div>
                         ) : null}
                       </div>
 
                       <div className="field">
                         <label>
-                          Can you travel outside city sometimes? <span className="req">*</span>
+                          Can you travel outside city sometimes?{" "}
+                          <span className="req">*</span>
                         </label>
                         <select
                           className="select"
                           value={form.travelOutsideSometimes}
-                          onChange={(e) => setField("travelOutsideSometimes", e.target.value)}
+                          onChange={(e) =>
+                            setField("travelOutsideSometimes", e.target.value)
+                          }
                           onBlur={() => markTouched("travelOutsideSometimes")}
                         >
                           <option value="">Select</option>
@@ -1317,23 +1588,30 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                           ))}
                         </select>
                         {fieldError("travelOutsideSometimes") ? (
-                          <div className="error">{fieldError("travelOutsideSometimes")}</div>
+                          <div className="error">
+                            {fieldError("travelOutsideSometimes")}
+                          </div>
                         ) : null}
                       </div>
 
                       <div className="field">
                         <label>
-                          Preferred working area (locality/market) <span className="req">*</span>
+                          Preferred working area (locality/market){" "}
+                          <span className="req">*</span>
                         </label>
                         <input
                           className="input"
                           value={form.preferredArea}
-                          onChange={(e) => setField("preferredArea", e.target.value)}
+                          onChange={(e) =>
+                            setField("preferredArea", e.target.value)
+                          }
                           onBlur={() => markTouched("preferredArea")}
                           placeholder="e.g. Civil Lines market"
                         />
                         {fieldError("preferredArea") ? (
-                          <div className="error">{fieldError("preferredArea")}</div>
+                          <div className="error">
+                            {fieldError("preferredArea")}
+                          </div>
                         ) : null}
                       </div>
 
@@ -1344,18 +1622,24 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         <select
                           className="select"
                           value={form.coverageRange}
-                          onChange={(e) => setField("coverageRange", e.target.value)}
+                          onChange={(e) =>
+                            setField("coverageRange", e.target.value)
+                          }
                           onBlur={() => markTouched("coverageRange")}
                         >
                           <option value="">Select</option>
-                          {["0–5 km", "5–10 km", "10–20 km", "20+ km"].map((x) => (
-                            <option key={x} value={x}>
-                              {x}
-                            </option>
-                          ))}
+                          {["0–5 km", "5–10 km", "10–20 km", "20+ km"].map(
+                            (x) => (
+                              <option key={x} value={x}>
+                                {x}
+                              </option>
+                            ),
+                          )}
                         </select>
                         {fieldError("coverageRange") ? (
-                          <div className="error">{fieldError("coverageRange")}</div>
+                          <div className="error">
+                            {fieldError("coverageRange")}
+                          </div>
                         ) : null}
                       </div>
 
@@ -1364,7 +1648,9 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         <input
                           className="input"
                           value={form.nearbyCities}
-                          onChange={(e) => setField("nearbyCities", e.target.value)}
+                          onChange={(e) =>
+                            setField("nearbyCities", e.target.value)
+                          }
                           placeholder="e.g. Noida, Ghaziabad..."
                         />
                       </div>
@@ -1385,16 +1671,27 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                   <input
                     type="checkbox"
                     checked={form.confirmCorrect}
-                    onChange={(e) => setField("confirmCorrect", e.target.checked)}
+                    onChange={(e) =>
+                      setField("confirmCorrect", e.target.checked)
+                    }
                   />
                   <div>
-                    <div style={{ fontWeight: 900 }}>I confirm the information is correct</div>
-                    {!form.confirmCorrect && (submitAttempted ? <div className="error">Required</div> : null)}
+                    <div style={{ fontWeight: 900 }}>
+                      I confirm the information is correct
+                    </div>
+                    {!form.confirmCorrect &&
+                      (submitAttempted ? (
+                        <div className="error">Required</div>
+                      ) : null)}
                   </div>
                 </div>
 
                 <div className="tcRow">
-                  <input type="checkbox" checked={form.agreeTc} onChange={(e) => setField("agreeTc", e.target.checked)} />
+                  <input
+                    type="checkbox"
+                    checked={form.agreeTc}
+                    onChange={(e) => setField("agreeTc", e.target.checked)}
+                  />
                   <div>
                     <div style={{ fontWeight: 900 }}>
                       I agree the T&amp;C{" "}
@@ -1402,7 +1699,10 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                         (Read Terms &amp; Conditions)
                       </span>
                     </div>
-                    {!form.agreeTc && (submitAttempted ? <div className="error">Required to submit</div> : null)}
+                    {!form.agreeTc &&
+                      (submitAttempted ? (
+                        <div className="error">Required to submit</div>
+                      ) : null)}
                   </div>
                 </div>
               </div>
@@ -1411,7 +1711,12 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
 
           {/* Footer */}
           <div className="footer">
-            <button className="btn btnLight" type="button" onClick={goPrev} disabled={step === "basic"}>
+            <button
+              className="btn btnLight"
+              type="button"
+              onClick={goPrev}
+              disabled={step === "basic"}
+            >
               Back
             </button>
 
@@ -1421,7 +1726,12 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
                   Next
                 </button>
               ) : (
-                <button className="btn btnPrimary" type="button" onClick={submit} disabled={!canSubmit}>
+                <button
+                  className="btn btnPrimary"
+                  type="button"
+                  onClick={submit}
+                  disabled={!canSubmit}
+                >
                   Submit
                 </button>
               )}
@@ -1436,15 +1746,31 @@ I agree Subtech/Active Cells may contact me via call/WhatsApp/SMS for tasks, tra
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modalHead">
               <h3>Terms &amp; Conditions (T&amp;C)</h3>
-              <button className="btn btnLight" type="button" onClick={() => setShowTc(false)}>
+              <button
+                className="btn btnLight"
+                type="button"
+                onClick={() => setShowTc(false)}
+              >
                 Close
               </button>
             </div>
             <div className="modalBody">
-              <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: "inherit" }}>{tcText}</pre>
+              <pre
+                style={{
+                  margin: 0,
+                  whiteSpace: "pre-wrap",
+                  fontFamily: "inherit",
+                }}
+              >
+                {tcText}
+              </pre>
             </div>
             <div className="modalFoot">
-              <button className="btn btnPrimary" type="button" onClick={() => setShowTc(false)}>
+              <button
+                className="btn btnPrimary"
+                type="button"
+                onClick={() => setShowTc(false)}
+              >
                 Done
               </button>
             </div>
