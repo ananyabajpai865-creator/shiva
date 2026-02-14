@@ -395,27 +395,41 @@ export default function App() {
     form.confirmCorrect &&
     form.agreeTc;
 
-  function submit() {
-    setSubmitAttempted(true);
-    if (!canSubmit) {
-      setToast("Please complete all required fields and accept T&C.");
-      setTimeout(() => setToast(""), 2500);
-      return;
-    }
-
-    const payload = {
-      ...form,
-      mobile: onlyDigits(form.mobile),
-      whatsapp: form.whatsapp ? onlyDigits(form.whatsapp) : "",
-      pincode: onlyDigits(form.pincode),
-      email: normalizeEmail(form.email),
-      photoName: form.photo ? form.photo.name : "",
-      createdAt: new Date().toISOString(),
-    };
-
-    console.log("SUBMIT PAYLOAD:", payload);
-    alert("Submitted (mock). Check console for payload.");
+  async function submit() {
+  setSubmitAttempted(true);
+  if (!canSubmit) {
+    setToast("Please complete all required fields and accept T&C.");
+    setTimeout(() => setToast(""), 2500);
+    return;
   }
+
+  const payload = {
+    ...form,
+    mobile: onlyDigits(form.mobile),
+    whatsapp: form.whatsapp ? onlyDigits(form.whatsapp) : "",
+    pincode: onlyDigits(form.pincode),
+    email: normalizeEmail(form.email),
+    photoName: form.photo ? form.photo.name : "",
+    createdAt: new Date().toISOString(),
+  };
+
+  try {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbxUz_zEZMXak5QGNGMGLU3pu_zSQGEAhzpu4cl9cIpM6dhw6dzLbdF2ltY1iF9xmQcD-Q/exec", {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    });
+
+    const out = await res.json();
+    if (!out.ok) throw new Error(out.error || "Submit failed");
+
+    alert("Submitted ✅ Data saved in Google Sheet");
+  } catch (e) {
+    console.error(e);
+    alert("Error: " + e.message);
+  }
+}
+
 
   // ✅ tab done logic
   const stepIndex = STEPS.findIndex((s) => s.key === step);
