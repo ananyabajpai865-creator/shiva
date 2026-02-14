@@ -410,7 +410,13 @@ export default function App() {
     pincode: onlyDigits(form.pincode),
     email: normalizeEmail(form.email),
     photoName: form.photo ? form.photo.name : "",
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toLocaleString("en-IN", {
+  timeZone: "Asia/Kolkata",
+  hour12: true
+}),
+
+  
+
   };
 
   try {
